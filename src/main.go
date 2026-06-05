@@ -9,11 +9,9 @@ func main() {
 	srcRoot := cmd.GetSrcRoot()
 	dstRoot := cmd.GetDstRoot()
 
-	srcDirs := core.ScanDirs(srcRoot)
-	dstDirs := core.ScanDirs(dstRoot)
-	core.SyncDirs(srcRoot, srcDirs, dstRoot, dstDirs)
+	srcDirs, srcFiles := core.Scan(srcRoot)
+	dstDirs, dstFiles := core.Scan(dstRoot)
 
-	srcFiles := core.ScanFiles(srcRoot)
-	dstFiles := core.ScanFiles(dstRoot)
+	core.SyncDirs(srcRoot, srcDirs, dstRoot, dstDirs)
 	core.SyncFiles(srcRoot, srcFiles, dstRoot, dstFiles)
 }
