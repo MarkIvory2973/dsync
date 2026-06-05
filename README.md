@@ -1,6 +1,6 @@
 # DSync
 
-A directory syncer that doesn't require large I/O operations.
+A local directory syncer that doesn't require large I/O operations.
 
 ## Installation
 
