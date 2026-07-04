@@ -4,54 +4,46 @@ import (
 	"bytes"
 	"dsync/pkg/files"
 	"dsync/pkg/log"
+	"dsync/pkg/sets"
 	"fmt"
 	"os"
 	"path/filepath"
-	"slices"
 	"sync"
 )
 
 func SyncDirs(srcRoot string, srcDirs []string, dstRoot string, dstDirs []string) {
 	var waitGroup sync.WaitGroup
 
-	for _, srcDir := range srcDirs {
-		if slices.Contains(dstDirs, srcDir) {
-			continue
-		}
-
+	for _, newDir := range sets.SetDifference(srcDirs, dstDirs) {
 		waitGroup.Go(func() {
-			srcPath := filepath.Join(srcRoot, srcDir)
+			srcPath := filepath.Join(srcRoot, newDir)
 			srcStat, err := os.Stat(srcPath)
 			if err != nil {
 				log.Warning(fmt.Sprintf("unable to visit '%s'", srcPath), err)
 				return
 			}
 
-			newPath := filepath.Join(dstRoot, srcDir)
+			newPath := filepath.Join(dstRoot, newDir)
 			err = os.MkdirAll(newPath, srcStat.Mode().Perm())
 			if err != nil {
 				log.Warning(fmt.Sprintf("unable to create '%s'", newPath), err)
 				return
 			}
 
-			fmt.Printf("+ '%s'\n", srcDir)
+			fmt.Printf("+ '%s'\n", newDir)
 		})
 	}
 
-	for _, dstDir := range dstDirs {
-		if slices.Contains(srcDirs, dstDir) {
-			continue
-		}
-
+	for _, oldDir := range sets.SetDifference(dstDirs, srcDirs) {
 		waitGroup.Go(func() {
-			delPath := filepath.Join(dstRoot, dstDir)
-			err := os.RemoveAll(delPath)
+			oldPath := filepath.Join(dstRoot, oldDir)
+			err := os.RemoveAll(oldPath)
 			if err != nil {
-				log.Warning(fmt.Sprintf("unable to remove '%s'", delPath), err)
+				log.Warning(fmt.Sprintf("unable to remove '%s'", oldPath), err)
 				return
 			}
 
-			fmt.Printf("- '%s'\n", dstDir)
+			fmt.Printf("- '%s'\n", oldDir)
 		})
 	}
 
@@ -61,58 +53,46 @@ func SyncDirs(srcRoot string, srcDirs []string, dstRoot string, dstDirs []string
 func SyncFiles(srcRoot string, srcFiles []string, dstRoot string, dstFiles []string) {
 	var waitGroup sync.WaitGroup
 
-	for _, srcFile := range srcFiles {
-		if slices.Contains(dstFiles, srcFile) {
-			continue
-		}
-
+	for _, newFile := range sets.SetDifference(srcFiles, dstFiles) {
 		waitGroup.Go(func() {
-			srcPath := filepath.Join(srcRoot, srcFile)
-			dstPath := filepath.Join(dstRoot, srcFile)
-			err := files.Copy(srcPath, dstPath)
+			srcPath := filepath.Join(srcRoot, newFile)
+			newPath := filepath.Join(dstRoot, newFile)
+			err := files.Copy(srcPath, newPath)
 			if err != nil {
-				log.Warning(fmt.Sprintf("unable to copy '%s'", srcFile), err)
+				log.Warning(fmt.Sprintf("unable to copy '%s'", newFile), err)
 				return
 			}
 
-			fmt.Printf("+ '%s'\n", srcFile)
+			fmt.Printf("+ '%s'\n", newFile)
 		})
 	}
 
-	for _, dstFile := range dstFiles {
-		if slices.Contains(srcFiles, dstFile) {
-			continue
-		}
-
+	for _, oldFile := range sets.SetDifference(dstFiles, srcFiles) {
 		waitGroup.Go(func() {
-			delPath := filepath.Join(dstRoot, dstFile)
-			err := os.Remove(delPath)
+			oldPath := filepath.Join(dstRoot, oldFile)
+			err := os.Remove(oldPath)
 			if err != nil {
-				log.Warning(fmt.Sprintf("unable to remove '%s'", dstFile), err)
+				log.Warning(fmt.Sprintf("unable to remove '%s'", oldFile), err)
 				return
 			}
 
-			fmt.Printf("- '%s'\n", dstFile)
+			fmt.Printf("- '%s'\n", oldFile)
 		})
 	}
 
-	for _, srcFile := range srcFiles {
-		if !slices.Contains(dstFiles, srcFile) {
-			continue
-		}
-
+	for _, existingFile := range sets.Intersection(srcFiles, dstFiles) {
 		waitGroup.Go(func() {
-			srcPath := filepath.Join(srcRoot, srcFile)
+			srcPath := filepath.Join(srcRoot, existingFile)
 			srcChecksum, err := files.Checksum(srcPath)
 			if err != nil {
-				log.Warning(fmt.Sprintf("unable to checksum '%s'", srcFile), err)
+				log.Warning(fmt.Sprintf("unable to checksum '%s'", existingFile), err)
 				return
 			}
 
-			dstPath := filepath.Join(dstRoot, srcFile)
+			dstPath := filepath.Join(dstRoot, existingFile)
 			dstChecksum, err := files.Checksum(dstPath)
 			if err != nil {
-				log.Warning(fmt.Sprintf("unable to checksum '%s'", srcFile), err)
+				log.Warning(fmt.Sprintf("unable to checksum '%s'", existingFile), err)
 				return
 			}
 
@@ -122,11 +102,11 @@ func SyncFiles(srcRoot string, srcFiles []string, dstRoot string, dstFiles []str
 
 			err = files.Copy(srcPath, dstPath)
 			if err != nil {
-				log.Warning(fmt.Sprintf("unable to update '%s'", srcFile), err)
+				log.Warning(fmt.Sprintf("unable to update '%s'", existingFile), err)
 				return
 			}
 
-			fmt.Printf("M '%s'\n", srcFile)
+			fmt.Printf("M '%s'\n", existingFile)
 		})
 	}
 
