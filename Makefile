@@ -13,7 +13,7 @@ build: init
 	cd src && $(GO) build
 	
 	mkdir dist
-	mv src/dsync dist
+	mv src/dsync* dist
 
 .PHONY: clean
 clean:

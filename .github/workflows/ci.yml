@@ -4,11 +4,12 @@ on:
   push:
     tags: v*.*.*
 
+permissions:
+  contents: write
+
 jobs:
   test:
     name: Test
-    permissions:
-      contents: read
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@main
@@ -24,8 +25,6 @@ jobs:
   build:
     needs: test
     name: Build
-    permissions:
-      contents: read
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -48,9 +47,10 @@ jobs:
           GOARCH: ${{ matrix.arch }}
         run: make build
 
-      - run: mv dist/dsync dist/dsync_${{ matrix.os }}_${{ matrix.arch }}
+      - if: ${{ matrix.os != 'windows' }}
+        run: mv dist/dsync dist/dsync_${{ matrix.os }}_${{ matrix.arch }}
       - if: ${{ matrix.os == 'windows' }}
-        run: mv dist/dsync_${{ matrix.os }}_${{ matrix.arch }} dist/dsync_${{ matrix.os }}_${{ matrix.arch }}.exe
+        run: mv dist/dsync.exe dist/dsync_${{ matrix.os }}_${{ matrix.arch }}.exe
 
       - uses: actions/upload-artifact@v7
         with:
@@ -60,8 +60,6 @@ jobs:
   release:
     needs: build
     name: Release
-    permissions:
-      contents: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v8
