@@ -1,15 +1,15 @@
 GO=go
 
-.PHONY: install
-install:
+.PHONY: init
+init:
 	cd src && $(GO) mod tidy
 
 .PHONY: test
-test:
+test: init
 	cd src && $(GO) test ./...
 
 .PHONY: build
-build:
+build: init
 	cd src && $(GO) build
 	mkdir dist
 	mv src/dsync dist
