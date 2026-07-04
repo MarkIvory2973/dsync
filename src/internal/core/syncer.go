@@ -3,19 +3,19 @@ package core
 import (
 	"bytes"
 	"dsync/pkg/files"
+	"dsync/pkg/goroutines"
 	"dsync/pkg/log"
 	"dsync/pkg/sets"
 	"fmt"
 	"os"
 	"path/filepath"
-	"sync"
 )
 
 func SyncDirs(srcRoot string, srcDirs []string, dstRoot string, dstDirs []string) {
-	var waitGroup sync.WaitGroup
+	context := goroutines.New()
 
 	for _, newDir := range sets.SetDifference(srcDirs, dstDirs) {
-		waitGroup.Go(func() {
+		context.Add(func() {
 			srcPath := filepath.Join(srcRoot, newDir)
 			srcStat, err := os.Stat(srcPath)
 			if err != nil {
@@ -35,7 +35,7 @@ func SyncDirs(srcRoot string, srcDirs []string, dstRoot string, dstDirs []string
 	}
 
 	for _, oldDir := range sets.SetDifference(dstDirs, srcDirs) {
-		waitGroup.Go(func() {
+		context.Add(func() {
 			oldPath := filepath.Join(dstRoot, oldDir)
 			err := os.RemoveAll(oldPath)
 			if err != nil {
@@ -47,14 +47,14 @@ func SyncDirs(srcRoot string, srcDirs []string, dstRoot string, dstDirs []string
 		})
 	}
 
-	waitGroup.Wait()
+	context.Wait()
 }
 
 func SyncFiles(srcRoot string, srcFiles []string, dstRoot string, dstFiles []string) {
-	var waitGroup sync.WaitGroup
+	context := goroutines.New()
 
 	for _, newFile := range sets.SetDifference(srcFiles, dstFiles) {
-		waitGroup.Go(func() {
+		context.Add(func() {
 			srcPath := filepath.Join(srcRoot, newFile)
 			newPath := filepath.Join(dstRoot, newFile)
 			err := files.Copy(srcPath, newPath)
@@ -68,7 +68,7 @@ func SyncFiles(srcRoot string, srcFiles []string, dstRoot string, dstFiles []str
 	}
 
 	for _, oldFile := range sets.SetDifference(dstFiles, srcFiles) {
-		waitGroup.Go(func() {
+		context.Add(func() {
 			oldPath := filepath.Join(dstRoot, oldFile)
 			err := os.Remove(oldPath)
 			if err != nil {
@@ -81,7 +81,7 @@ func SyncFiles(srcRoot string, srcFiles []string, dstRoot string, dstFiles []str
 	}
 
 	for _, existingFile := range sets.Intersection(srcFiles, dstFiles) {
-		waitGroup.Go(func() {
+		context.Add(func() {
 			srcPath := filepath.Join(srcRoot, existingFile)
 			srcChecksum, err := files.Checksum(srcPath)
 			if err != nil {
@@ -110,5 +110,5 @@ func SyncFiles(srcRoot string, srcFiles []string, dstRoot string, dstFiles []str
 		})
 	}
 
-	waitGroup.Wait()
+	context.Wait()
 }
