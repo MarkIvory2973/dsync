@@ -9,7 +9,7 @@ test:
 	cd src && $(GO) test ./...
 
 .PHONY: build
-build: install test
+build:
 	cd src && $(GO) build
 	mkdir dist
 	mv src/dsync dist
