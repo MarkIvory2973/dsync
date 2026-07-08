@@ -19,6 +19,9 @@ jobs:
           go-version-file: 'src/go.mod'
           cache-dependency-path: 'src/go.sum'
 
+      - name: Install
+        run: make install
+
       - name: Test
         run: make test
 
@@ -41,6 +44,9 @@ jobs:
           go-version-file: 'src/go.mod'
           cache-dependency-path: 'src/go.sum'
 
+      - name: Install
+        run: make install
+
       - name: Build
         env:
           GOOS: ${{ matrix.os }}
@@ -51,6 +57,10 @@ jobs:
         run: mv dist/dsync dist/dsync_${{ matrix.os }}_${{ matrix.arch }}
       - if: ${{ matrix.os == 'windows' }}
         run: mv dist/dsync.exe dist/dsync_${{ matrix.os }}_${{ matrix.arch }}.exe
+
+      - if: ${{ matrix.os == 'linux' }}
+        name: Package
+        run: make package
 
       - uses: actions/upload-artifact@v7
         with:

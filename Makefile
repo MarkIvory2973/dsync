@@ -1,21 +1,26 @@
 GO := go
-GO_FLAGS := -trimpath -ldflags="-s -w"
 CGO_ENABLED := 0
 
-.PHONY: init
-init:
-	cd src && $(GO) mod tidy
+NFPM := nfpm
+
+.PHONY: install
+install:
+	cd src && $(GO) mod download
 
 .PHONY: test
-test: init
+test:
 	cd src && $(GO) test ./...
 
 .PHONY: build
-build: init
-	cd src && $(GO) build $(GO_FLAGS)
+build:
+	cd src && $(GO) build -trimpath -ldflags="-s -w"
 	
-	mkdir dist
+	mkdir -p dist
 	mv src/dsync* dist
+
+.PHONY: package
+package:
+	$(NFPM) pkg --packager deb --target dist
 
 .PHONY: clean
 clean:
