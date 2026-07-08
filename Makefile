@@ -15,10 +15,10 @@ test:
 
 .PHONY: build
 build:
-	cd src && $(GO) build -trimpath -ldflags="-s -w"
+	cd src && $(GO) build -trimpath -ldflags="-s -w" -o dsync
 	
 	mkdir -p dist
-	mv src/dsync* dist
+	mv src/dsync dist
 
 .PHONY: package
 package:

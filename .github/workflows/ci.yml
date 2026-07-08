@@ -53,17 +53,17 @@ jobs:
           GOARCH: ${{ matrix.arch }}
         run: make build
 
-      - if: ${{ matrix.os != 'windows' }}
-        run: mv dist/dsync dist/dsync_${{ matrix.os }}_${{ matrix.arch }}
-      - if: ${{ matrix.os == 'windows' }}
-        run: mv dist/dsync.exe dist/dsync_${{ matrix.os }}_${{ matrix.arch }}.exe
-
       - if: ${{ matrix.os == 'linux' }}
         name: Package
         env:
           GOOS: ${{ matrix.os }}
           GOARCH: ${{ matrix.arch }}
         run: make package
+
+      - if: ${{ matrix.os != 'windows' }}
+        run: mv dist/dsync dist/dsync_${{ matrix.os }}_${{ matrix.arch }}
+      - if: ${{ matrix.os == 'windows' }}
+        run: mv dist/dsync dist/dsync_${{ matrix.os }}_${{ matrix.arch }}.exe
 
       - uses: actions/upload-artifact@v7
         with:
