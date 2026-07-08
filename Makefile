@@ -1,8 +1,6 @@
-# environments
-CGO_ENABLED := 0
-
 GO := go
 GO_FLAGS := -trimpath -ldflags="-s -w"
+CGO_ENABLED := 0
 
 .PHONY: init
 init:
