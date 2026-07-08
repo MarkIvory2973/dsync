@@ -5,6 +5,8 @@ NFPM := nfpm
 
 .PHONY: install
 install:
+	$(GO) install github.com/goreleaser/nfpm/v2/cmd/nfpm@latest
+	
 	cd src && $(GO) mod download
 
 .PHONY: test
