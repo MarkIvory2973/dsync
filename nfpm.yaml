@@ -1,4 +1,5 @@
 name: "dsync"
+arch: "${GOARCH}"
 platform: "linux"
 version: "0.6.0"
 section: "utils"
