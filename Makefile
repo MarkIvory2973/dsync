@@ -14,7 +14,7 @@ test: init
 
 .PHONY: build
 build: init
-	cd src && $(GO) build
+	cd src && $(GO) build $(GO_FLAGS)
 	
 	mkdir dist
 	mv src/dsync* dist
