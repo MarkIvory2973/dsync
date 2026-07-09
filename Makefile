@@ -26,4 +26,5 @@ package:
 
 .PHONY: clean
 clean:
+	rm -rf src/dsync
 	rm -rf dist
