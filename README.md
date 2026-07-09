@@ -4,17 +4,47 @@ A local directory syncer that doesn't require large I/O operations.
 
 ## Installation
 
-Clone this repository:
+### GitHub Releases
+
+Download latest release from [GitHub Releases](https://github.com/MarkIvory2973/dsync/releases/latest).
+
+### Build from source
+
+#### Requirements
+
+ - Go 1.26+
+ - GNU Make
+ - Git
+
+Clone the repository:
 
 ```bash
 git clone https://github.com/MarkIvory2973/dsync.git
 cd dsync
 ```
 
-Build:
+Install dependencies:
+
+```bash
+make install
+```
+
+Build binaries:
 
 ```bash
 make build
+```
+
+Build `.deb` packages (optional):
+
+```bash
+make package
+```
+
+Clean files:
+
+```bash
+make clean
 ```
 
 ## Usage
