@@ -16,8 +16,8 @@ jobs:
 
       - uses: actions/setup-go@v6
         with:
-          go-version-file: 'src/go.mod'
-          cache-dependency-path: 'src/go.sum'
+          go-version-file: src/go.mod
+          cache-dependency-path: src/go.sum
 
       - name: Install
         run: make install
@@ -41,8 +41,8 @@ jobs:
 
       - uses: actions/setup-go@v6
         with:
-          go-version-file: 'src/go.mod'
-          cache-dependency-path: 'src/go.sum'
+          go-version-file: src/go.mod
+          cache-dependency-path: src/go.sum
 
       - name: Install
         run: make install
