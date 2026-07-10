@@ -29,7 +29,7 @@ func Scan(root string) ([]string, []string) {
 
 		if entry.IsDir() {
 			dirs = append(dirs, path)
-		} else {
+		} else if entry.Type().IsRegular() {
 			files = append(files, path)
 		}
 
