@@ -3,7 +3,7 @@ package sets
 import "slices"
 
 func Intersection[T comparable](A []T, B []T) []T {
-	var C []T
+	C := []T{}
 	for _, a := range A {
 		if !slices.Contains(B, a) {
 			continue
@@ -16,7 +16,7 @@ func Intersection[T comparable](A []T, B []T) []T {
 }
 
 func SetDifference[T comparable](A []T, B []T) []T {
-	var C []T
+	C := []T{}
 	for _, a := range A {
 		if slices.Contains(B, a) {
 			continue
