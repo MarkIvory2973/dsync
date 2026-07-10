@@ -44,6 +44,10 @@ jobs:
           go-version-file: src/go.mod
           cache-dependency-path: src/go.sum
 
+      - run: |
+          sudo apt-get update
+          sudo apt-get install -y upx-ucl
+
       - name: Install
         run: make install
 

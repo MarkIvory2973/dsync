@@ -1,6 +1,8 @@
 GO := go
 CGO_ENABLED := 0
 
+UPX := upx
+
 NFPM := nfpm
 
 .PHONY: install
@@ -16,6 +18,7 @@ test:
 .PHONY: build
 build:
 	cd src && $(GO) build -trimpath -ldflags="-s -w" -o dsync
+	-cd src && $(UPX) --best --lzma dsync
 	
 	mkdir -p dist
 	mv src/dsync dist
