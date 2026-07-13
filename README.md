@@ -12,10 +12,10 @@ Download latest release from [GitHub Releases](https://github.com/MarkIvory2973/
 
 #### Requirements
 
- - Go 1.26+
- - UPX
- - GNU Make
- - Git
+- Go 1.26+
+- UPX
+- GNU Make
+- Git
 
 Clone the repository:
 
