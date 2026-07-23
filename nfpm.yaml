@@ -1,11 +1,11 @@
 name: "dsync"
 arch: "${GOARCH}"
 platform: "linux"
-version: "0.7.0"
+version: "0.7.1"
 section: "utils"
 maintainer: "Mark Ivory <markivory2973@gmail.com>"
 description: A directory syncer that doesn't require large I/O operations.
 homepage: "https://github.com/MarkIvory2973/dsync"
 contents:
-  - src: dist/dsync*
+  - src: dist/output
     dst: /usr/bin/dsync

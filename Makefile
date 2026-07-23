@@ -1,9 +1,9 @@
-export GOOS ?= $(shell go env GOOS)
-export GOARCH ?= $(shell go env GOARCH)
+GOOS ?= $(shell go env GOOS)
+GOARCH ?= $(shell go env GOARCH)
 ifeq ($(GOOS),windows)
-export GOOUT := dsync_$(GOOS)_$(GOARCH).exe
+GOOUT := dsync_$(GOOS)_$(GOARCH).exe
 else
-export GOOUT := dsync_$(GOOS)_$(GOARCH)
+GOOUT := dsync_$(GOOS)_$(GOARCH)
 endif
 
 NFPM := nfpm
@@ -25,10 +25,11 @@ build:
 	mkdir -p dist
 
 	$(MAKE) -C src build
-	mv src/$(GOOUT) dist
+	mv src/output dist
 ifeq ($(GOOS),linux)
 	$(NFPM) pkg $(NFPMFLAGS) --target dist
 endif
+	mv dist/output dist/$(GOOUT)
 
 # Clean files
 .PHONY: clean

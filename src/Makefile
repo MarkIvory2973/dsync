@@ -1,6 +1,8 @@
 GO := go
 GOFLAGS := -trimpath -ldflags="-s -w"
 CGO_ENABLED := 0
+GOOS ?= $(shell go env GOOS)
+GOARCH ?= $(shell go env GOARCH)
 
 UPX := upx
 UPXFLAGS := --best --lzma
@@ -15,12 +17,12 @@ UPXFLAGS := --best --lzma
 install: .install
 
 # Build binaries
-$(GOOUT): $(shell find . -type f -iname "*.go") .install
-	$(GO) build $(GOFLAGS) -o $(GOOUT)
-	-$(UPX) $(UPXFLAGS) $(GOOUT)
+output: $(shell find . -type f -iname "*.go") .install
+	$(GO) build $(GOFLAGS) -o output
+	-$(UPX) $(UPXFLAGS) output
 
 .PHONY: build
-build: $(GOOUT)
+build: output
 
 # Test units
 .PHONY: test
@@ -31,4 +33,4 @@ test:
 .PHONY: clean
 clean:
 	$(RM) .install
-	$(RM) $(GOOUT)
+	$(RM) output
