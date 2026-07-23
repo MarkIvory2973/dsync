@@ -14,15 +14,16 @@ jobs:
     steps:
       - uses: actions/checkout@main
 
-      - uses: actions/setup-go@v6
+      - name: Install Go
+        uses: actions/setup-go@v6
         with:
           go-version-file: src/go.mod
           cache-dependency-path: src/go.sum
 
-      - name: Install
+      - name: Install dependencies
         run: make install
 
-      - name: Test
+      - name: Test units
         run: make test
 
   build:
@@ -39,35 +40,20 @@ jobs:
     steps:
       - uses: actions/checkout@main
 
-      - uses: actions/setup-go@v6
+      - name: Install Go
+        uses: actions/setup-go@v6
         with:
           go-version-file: src/go.mod
           cache-dependency-path: src/go.sum
+      
+      - name: Install nFPM
+        run: go install github.com/goreleaser/nfpm/v2/cmd/nfpm@latest
 
-      - run: |
-          sudo apt-get update
-          sudo apt-get install -y upx-ucl
-
-      - name: Install
+      - name: Install dependencies
         run: make install
 
-      - name: Build
-        env:
-          GOOS: ${{ matrix.os }}
-          GOARCH: ${{ matrix.arch }}
+      - name: Build binaries and packages
         run: make build
-
-      - if: ${{ matrix.os == 'linux' }}
-        name: Package
-        env:
-          GOOS: ${{ matrix.os }}
-          GOARCH: ${{ matrix.arch }}
-        run: make package
-
-      - if: ${{ matrix.os != 'windows' }}
-        run: mv dist/dsync dist/dsync_${{ matrix.os }}_${{ matrix.arch }}
-      - if: ${{ matrix.os == 'windows' }}
-        run: mv dist/dsync dist/dsync_${{ matrix.os }}_${{ matrix.arch }}.exe
 
       - uses: actions/upload-artifact@v7
         with:
@@ -85,8 +71,7 @@ jobs:
           pattern: build_*_*
           merge-multiple: true
 
-      - name: Release
-        uses: softprops/action-gh-release@v3
+      - uses: softprops/action-gh-release@v3
         with:
           draft: true
           name: DSync ${{ github.ref_name }}

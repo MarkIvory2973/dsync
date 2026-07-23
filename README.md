@@ -13,6 +13,7 @@ Download latest release from [GitHub Releases](https://github.com/MarkIvory2973/
 #### Requirements
 
 - Go 1.26+
+- nFPM
 - UPX
 - GNU Make
 - Git
@@ -36,7 +37,7 @@ Build binaries:
 make build
 ```
 
-Build `.deb` packages (optional):
+Build packages (optional):
 
 ```bash
 make package

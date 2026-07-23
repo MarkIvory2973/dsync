@@ -1,33 +1,38 @@
-GO := go
-CGO_ENABLED := 0
-
-UPX := upx
+export GOOS ?= $(shell go env GOOS)
+export GOARCH ?= $(shell go env GOARCH)
+ifeq ($(GOOS),windows)
+export GOOUT := dsync_$(GOOS)_$(GOARCH).exe
+else
+export GOOUT := dsync_$(GOOS)_$(GOARCH)
+endif
 
 NFPM := nfpm
+NFPMFLAGS := --packager deb
 
+# Install dependencies
 .PHONY: install
 install:
-	$(GO) install github.com/goreleaser/nfpm/v2/cmd/nfpm@latest
-	
-	cd src && $(GO) mod download
+	$(MAKE) -C src install
 
+# Test units
 .PHONY: test
 test:
-	cd src && $(GO) test ./...
+	$(MAKE) -C src test
 
+# Build binaries and packages
 .PHONY: build
 build:
-	cd src && $(GO) build -trimpath -ldflags="-s -w" -o dsync
-	-cd src && $(UPX) --best --lzma dsync
-	
 	mkdir -p dist
-	mv src/dsync dist
 
-.PHONY: package
-package:
-	$(NFPM) pkg --packager deb --target dist
+	$(MAKE) -C src build
+	mv src/$(GOOUT) dist
+ifeq ($(GOOS),linux)
+	$(NFPM) pkg $(NFPMFLAGS) --target dist
+endif
 
+# Clean files
 .PHONY: clean
 clean:
-	rm -rf src/dsync
-	rm -rf dist
+	$(MAKE) -C src clean
+
+	$(RM) -r dist
