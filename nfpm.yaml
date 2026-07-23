@@ -1,7 +1,7 @@
 name: "dsync"
 arch: "${GOARCH}"
 platform: "linux"
-version: "0.6.1"
+version: "0.7.0"
 section: "utils"
 maintainer: "Mark Ivory <markivory2973@gmail.com>"
 description: A directory syncer that doesn't require large I/O operations.
