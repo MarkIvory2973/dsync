@@ -27,6 +27,10 @@ dist/output:
 
 .PHONY: build
 build: dist/output
+
+# Build packages
+.PHONY: package
+package: dist/output
 ifeq ($(GOOS),linux)
 	$(NFPM) pkg $(NFPMFLAGS) --target dist
 endif
