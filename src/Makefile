@@ -16,6 +16,11 @@ UPXFLAGS := --best --lzma
 .PHONY: install
 install: .install
 
+# Test units
+.PHONY: test
+test:
+	$(GO) test ./...
+
 # Build binaries
 output: .install $(shell find . -type f -iname "*.go")
 	$(GO) build $(GOFLAGS) -o output
@@ -23,11 +28,6 @@ output: .install $(shell find . -type f -iname "*.go")
 
 .PHONY: build
 build: output
-
-# Test units
-.PHONY: test
-test:
-	$(GO) test ./...
 
 # Clean files
 .PHONY: clean
