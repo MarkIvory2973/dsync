@@ -31,10 +31,16 @@ Install dependencies:
 make install
 ```
 
-Build binaries and packages:
+Build binaries:
 
 ```bash
 make build
+```
+
+Build packages:
+
+```bash
+make package
 ```
 
 Clean files:
