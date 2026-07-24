@@ -20,12 +20,13 @@ test:
 	$(MAKE) -C src test
 
 # Build binaries and packages
-.PHONY: build
-build:
-	mkdir -p dist
-
+dist/output:
 	$(MAKE) -C src build
+	mkdir -p dist
 	mv src/output dist
+
+.PHONY: build
+build: dist/output
 ifeq ($(GOOS),linux)
 	$(NFPM) pkg $(NFPMFLAGS) --target dist
 endif
