@@ -17,7 +17,7 @@ UPXFLAGS := --best --lzma
 install: .install
 
 # Build binaries
-output: $(shell find . -type f -iname "*.go") .install
+output: .install $(shell find . -type f -iname "*.go")
 	$(GO) build $(GOFLAGS) -o output
 	-$(UPX) $(UPXFLAGS) output
 
