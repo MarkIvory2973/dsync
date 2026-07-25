@@ -22,15 +22,15 @@ test:
 	$(GO) test ./...
 
 # Build binaries
-output: .install $(shell find . -type f -iname "*.go")
-	$(GO) build $(GOFLAGS) -o output
-	-$(UPX) $(UPXFLAGS) output
+dsync: .install $(shell find . -type f -iname "*.go")
+	$(GO) build $(GOFLAGS) -o dsync
+	-$(UPX) $(UPXFLAGS) dsync
 
 .PHONY: build
-build: output
+build: dsync
 
 # Clean files
 .PHONY: clean
 clean:
 	$(RM) .install
-	$(RM) output
+	$(RM) dsync

@@ -7,5 +7,5 @@ maintainer: "Mark Ivory <markivory2973@gmail.com>"
 description: A directory syncer that doesn't require large I/O operations.
 homepage: "https://github.com/MarkIvory2973/dsync"
 contents:
-  - src: dist/output
+  - src: dist/dsync
     dst: /usr/bin/dsync

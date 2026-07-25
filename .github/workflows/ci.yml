@@ -80,7 +80,8 @@ jobs:
           pattern: build_*_*
           merge-multiple: true
 
-      - uses: softprops/action-gh-release@v3
+      - name: Release ${{ github.ref_name }}
+        uses: softprops/action-gh-release@v3
         with:
           draft: true
           name: DSync ${{ github.ref_name }}

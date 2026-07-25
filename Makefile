@@ -19,22 +19,22 @@ install:
 test:
 	$(MAKE) -C src test
 
-# Build binaries and packages
-dist/output:
+# Build binaries
+dist/dsync:
 	$(MAKE) -C src build
 	mkdir -p dist
-	mv src/output dist
+	mv src/dsync dist
 
 .PHONY: build
-build: dist/output
+build: dist/dsync
 
 # Build packages
 .PHONY: package
-package: dist/output
+package: dist/dsync
 ifeq ($(GOOS),linux)
 	$(NFPM) pkg $(NFPMFLAGS) --target dist
 endif
-	mv dist/output dist/$(GOOUT)
+	mv dist/dsync dist/$(GOOUT)
 
 # Clean files
 .PHONY: clean
