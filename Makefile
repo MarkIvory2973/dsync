@@ -27,10 +27,6 @@ dist/dsync:
 
 .PHONY: build
 build: dist/dsync
-
-# Build packages
-.PHONY: package
-package: dist/dsync
 ifeq ($(GOOS),linux)
 	$(NFPM) pkg $(NFPMFLAGS) --target dist
 endif
