@@ -23,12 +23,10 @@ ifeq ($(OS),linux)
 	-$(NFPM) pkg --packager deb $(NFPMFLAGS)
 	-$(NFPM) pkg --packager rpm $(NFPMFLAGS)
 endif
-
 	mv dist/output dist/$(OUTPUT)
 
 # Clean files
 .PHONY: clean
 clean:
 	$(MAKE) -C src clean
-
 	$(RM) -r dist
