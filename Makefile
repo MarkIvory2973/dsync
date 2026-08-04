@@ -1,4 +1,3 @@
-include mk/upx.mk
 include mk/output.mk
 include mk/nfpm.mk
 
@@ -20,7 +19,6 @@ dist/output:
 
 .PHONY: build
 build: dist/output
-	-$(UPX) $(UPXFLAGS) dist/output
 ifeq ($(OS),linux)
 	-$(NFPM) pkg --packager deb $(NFPMFLAGS)
 	-$(NFPM) pkg --packager rpm $(NFPMFLAGS)
