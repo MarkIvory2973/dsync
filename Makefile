@@ -7,7 +7,6 @@ GOOUT := dsync_$(GOOS)_$(GOARCH)
 endif
 
 NFPM := nfpm
-NFPMFLAGS := --packager deb
 
 # Install dependencies
 .PHONY: install
@@ -28,7 +27,8 @@ dist/dsync:
 .PHONY: build
 build: dist/dsync
 ifeq ($(GOOS),linux)
-	$(NFPM) pkg $(NFPMFLAGS) --target dist
+	$(NFPM) pkg --packager deb --target dist
+	$(NFPM) pkg --packager rpm --target dist
 endif
 	mv dist/dsync dist/$(GOOUT)
 
