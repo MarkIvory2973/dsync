@@ -1,4 +1,4 @@
-include go.mk
+include mk/go.mk
 
 # Install dependencies
 .install: go.mod go.sum

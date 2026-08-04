@@ -1,6 +1,6 @@
-include upx.mk
-include output.mk
-include nfpm.mk
+include mk/upx.mk
+include mk/output.mk
+include mk/nfpm.mk
 
 # Install dependencies
 .PHONY: install
@@ -21,10 +21,11 @@ dist/output:
 .PHONY: build
 build: dist/output
 	-$(UPX) $(UPXFLAGS) output
-ifeq ($(GOOS),linux)
+ifeq ($(OS),linux)
 	$(NFPM) pkg --packager deb $(NFPMFLAGS)
 	$(NFPM) pkg --packager rpm $(NFPMFLAGS)
 endif
+
 	mv dist/output dist/$(OUTPUT)
 
 # Clean files
