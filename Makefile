@@ -1,12 +1,6 @@
-GOOS ?= $(shell go env GOOS)
-GOARCH ?= $(shell go env GOARCH)
-ifeq ($(GOOS),windows)
-GOOUT := dsync_$(GOOS)_$(GOARCH).exe
-else
-GOOUT := dsync_$(GOOS)_$(GOARCH)
-endif
-
-NFPM := nfpm
+include upx.mk
+include output.mk
+include nfpm.mk
 
 # Install dependencies
 .PHONY: install
@@ -19,18 +13,19 @@ test:
 	$(MAKE) -C src test
 
 # Build binaries
-dist/dsync:
+dist/output:
 	$(MAKE) -C src build
 	mkdir -p dist
-	mv src/dsync dist
+	mv src/output dist
 
 .PHONY: build
-build: dist/dsync
+build: dist/output
+	-$(UPX) $(UPXFLAGS) output
 ifeq ($(GOOS),linux)
-	$(NFPM) pkg --packager deb --target dist
-	$(NFPM) pkg --packager rpm --target dist
+	$(NFPM) pkg --packager deb $(NFPMFLAGS)
+	$(NFPM) pkg --packager rpm $(NFPMFLAGS)
 endif
-	mv dist/dsync dist/$(GOOUT)
+	mv dist/output dist/$(OUTPUT)
 
 # Clean files
 .PHONY: clean

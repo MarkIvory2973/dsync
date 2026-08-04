@@ -9,5 +9,5 @@ vendor: GoReleaser
 homepage: https://github.com/MarkIvory2973/dsync
 license: GPL-3.0-only
 contents:
-  - src: dist/dsync
+  - src: dist/output
     dst: /usr/bin/dsync
