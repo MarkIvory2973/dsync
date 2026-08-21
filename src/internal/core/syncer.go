@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"dsync/pkg/files"
 	"dsync/pkg/goroutines"
-	"dsync/pkg/log"
+	"dsync/pkg/logs"
 	"dsync/pkg/sets"
 	"fmt"
 	"os"
@@ -19,14 +19,16 @@ func SyncDirs(srcRoot string, srcDirs []string, dstRoot string, dstDirs []string
 			srcPath := filepath.Join(srcRoot, newDir)
 			srcStat, err := os.Stat(srcPath)
 			if err != nil {
-				log.Warning(fmt.Sprintf("unable to visit '%s'", srcPath), err)
+				message := fmt.Sprintf("couldn't visit '%s'", srcPath)
+				logs.Warning("core.SyncDirs", message, err)
 				return
 			}
 
 			newPath := filepath.Join(dstRoot, newDir)
 			err = os.MkdirAll(newPath, srcStat.Mode().Perm())
 			if err != nil {
-				log.Warning(fmt.Sprintf("unable to create '%s'", newPath), err)
+				message := fmt.Sprintf("couldn't create '%s'", newPath)
+				logs.Warning("core.SyncDirs", message, err)
 				return
 			}
 
@@ -39,7 +41,8 @@ func SyncDirs(srcRoot string, srcDirs []string, dstRoot string, dstDirs []string
 			oldPath := filepath.Join(dstRoot, oldDir)
 			err := os.RemoveAll(oldPath)
 			if err != nil {
-				log.Warning(fmt.Sprintf("unable to remove '%s'", oldPath), err)
+				message := fmt.Sprintf("couldn't remove '%s'", oldPath)
+				logs.Warning("core.SyncDirs", message, err)
 				return
 			}
 
@@ -59,7 +62,8 @@ func SyncFiles(srcRoot string, srcFiles []string, dstRoot string, dstFiles []str
 			newPath := filepath.Join(dstRoot, newFile)
 			err := files.Copy(srcPath, newPath)
 			if err != nil {
-				log.Warning(fmt.Sprintf("unable to copy '%s'", newFile), err)
+				message := fmt.Sprintf("couldn't copy '%s'", newFile)
+				logs.Warning("core.SyncFiles", message, err)
 				return
 			}
 
@@ -72,7 +76,8 @@ func SyncFiles(srcRoot string, srcFiles []string, dstRoot string, dstFiles []str
 			oldPath := filepath.Join(dstRoot, oldFile)
 			err := os.Remove(oldPath)
 			if err != nil {
-				log.Warning(fmt.Sprintf("unable to remove '%s'", oldFile), err)
+				message := fmt.Sprintf("couldn't remove '%s'", oldFile)
+				logs.Warning("core.SyncFiles", message, err)
 				return
 			}
 
@@ -85,14 +90,16 @@ func SyncFiles(srcRoot string, srcFiles []string, dstRoot string, dstFiles []str
 			srcPath := filepath.Join(srcRoot, existingFile)
 			srcChecksum, err := files.Checksum(srcPath)
 			if err != nil {
-				log.Warning(fmt.Sprintf("unable to checksum '%s'", existingFile), err)
+				message := fmt.Sprintf("couldn't checksum '%s'", existingFile)
+				logs.Warning("core.SyncFiles", message, err)
 				return
 			}
 
 			dstPath := filepath.Join(dstRoot, existingFile)
 			dstChecksum, err := files.Checksum(dstPath)
 			if err != nil {
-				log.Warning(fmt.Sprintf("unable to checksum '%s'", existingFile), err)
+				message := fmt.Sprintf("couldn't checksum '%s'", existingFile)
+				logs.Warning("core.SyncFiles", message, err)
 				return
 			}
 
@@ -102,7 +109,8 @@ func SyncFiles(srcRoot string, srcFiles []string, dstRoot string, dstFiles []str
 
 			err = files.Copy(srcPath, dstPath)
 			if err != nil {
-				log.Warning(fmt.Sprintf("unable to update '%s'", existingFile), err)
+				message := fmt.Sprintf("couldn't update '%s'", existingFile)
+				logs.Warning("core.SyncFiles", message, err)
 				return
 			}
 

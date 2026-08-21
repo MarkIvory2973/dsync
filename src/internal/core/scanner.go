@@ -1,7 +1,7 @@
 package core
 
 import (
-	"dsync/pkg/log"
+	"dsync/pkg/logs"
 	"fmt"
 	"io/fs"
 	"path/filepath"
@@ -13,7 +13,8 @@ func Scan(root string) ([]string, []string) {
 
 	filepath.WalkDir(root, func(path string, entry fs.DirEntry, err error) error {
 		if err != nil {
-			log.Warning(fmt.Sprintf("unable to scan '%s'", path), err)
+			message := fmt.Sprintf("couldn't scan '%s'", path)
+			logs.Warning("core.Scan", message, err)
 			return nil
 		}
 
@@ -23,7 +24,8 @@ func Scan(root string) ([]string, []string) {
 
 		path, err = filepath.Rel(root, path)
 		if err != nil {
-			log.Warning(fmt.Sprintf("unable to process '%s'", path), err)
+			message := fmt.Sprintf("couldn't process '%s'", path)
+			logs.Warning("core.Scan", message, err)
 			return nil
 		}
 
