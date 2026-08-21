@@ -20,8 +20,8 @@ dist/output:
 .PHONY: build
 build: dist/output
 ifeq ($(OS),linux)
-	-$(NFPM) pkg --packager deb $(NFPMFLAGS)
-	-$(NFPM) pkg --packager rpm $(NFPMFLAGS)
+	$(NFPM) pkg --packager deb $(NFPMFLAGS)
+	$(NFPM) pkg --packager rpm $(NFPMFLAGS)
 endif
 	mv dist/output dist/$(OUTPUT)
 
